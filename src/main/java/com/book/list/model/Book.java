@@ -26,4 +26,8 @@ public class Book {
     public String getAuthor() {
         return author;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

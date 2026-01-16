@@ -21,8 +21,30 @@ public class BookController {
     };
     @PostMapping("/addBook")
     public Book addBook(@RequestBody Book book) {
+        Long nextId = books.stream().mapToLong(b -> b.getId()).max().orElse(0) + 1;
+        book.setId(nextId);
         books.add(book);
         return book;
+    }
+    @PutMapping("/updateBook/{id}")
+    public Book updateBook(@PathVariable("id") String id, @RequestBody Book updatedBook) {
+        for (int i = 0; i < books.size(); i++) {
+            if (books.get(i).getId().toString().equals(id)) {
+                updatedBook.setId(Long.parseLong(id));
+                books.set(i, updatedBook);
+                return updatedBook;
+            }
+        }
+        return null;
+    }
+    @DeleteMapping("/deleteBook/{id}")
+    public void deleteBook(@PathVariable("id") String id) {
+        for (int i = 0; i < books.size(); i++) {
+            if (books.get(i).getId().toString().equals(id)) {
+                books.remove(i);
+                break;
+            }
+        }
     }
     @GetMapping("/{id}")
     public Book getBookById(@PathVariable Long id) {
