@@ -12,8 +12,8 @@ import java.util.List;
 @RequestMapping("/books")
 public class BookController {
     private List<Book> books = new ArrayList<>(List.of(
-        new Book(1L, "Cooking for Beginners", "Gosho"),
-        new Book(2L, "How to Code", "Pesho")
+        new Book(1, "Cooking for Beginners", "Gosho"),
+        new Book(2, "How to Code", "Pesho")
     ));
     @GetMapping
     public List<Book> getallBooks() {
@@ -21,16 +21,16 @@ public class BookController {
     };
     @PostMapping("/addBook")
     public Book addBook(@RequestBody Book book) {
-        Long nextId = books.stream().mapToLong(b -> b.getId()).max().orElse(0) + 1;
+        int nextId = books.stream().mapToInt(b -> b.getId()).max().orElse(0) + 1;
         book.setId(nextId);
         books.add(book);
         return book;
     }
     @PutMapping("/updateBook/{id}")
-    public Book updateBook(@PathVariable("id") String id, @RequestBody Book updatedBook) {
+    public Book updateBook(@PathVariable("id") Integer id, @RequestBody Book updatedBook) {
         for (int i = 0; i < books.size(); i++) {
-            if (books.get(i).getId().toString().equals(id)) {
-                updatedBook.setId(Long.parseLong(id));
+            if (books.get(i).getId() == id) {
+                updatedBook.setId(id);
                 books.set(i, updatedBook);
                 return updatedBook;
             }
@@ -38,18 +38,18 @@ public class BookController {
         return null;
     }
     @DeleteMapping("/deleteBook/{id}")
-    public void deleteBook(@PathVariable("id") String id) {
+    public void deleteBook(@PathVariable("id") Integer id) {
         for (int i = 0; i < books.size(); i++) {
-            if (books.get(i).getId().toString().equals(id)) {
+            if (id == books.get(i).getId()) {
                 books.remove(i);
                 break;
             }
         }
     }
     @GetMapping("/{id}")
-    public Book getBookById(@PathVariable Long id) {
+    public Book getBookById(@PathVariable Integer id) {
         return books.stream()
-                .filter(book -> book.getId().equals(id))
+                .filter(book -> book.getId() == id)
                 .findFirst()
                 .orElse(null);
     }
